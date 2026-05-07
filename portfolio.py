@@ -5,11 +5,23 @@ PORTFOLIO_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'portf
 
 DEFAULT_PORTFOLIO = [
     {"name": "Algonquin Power and Utilities", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
-    {"name": "Bayshore Healthcare", "sector": "Healthcare Services", "type": "Watchlist", "entry_date": "2025-01"},
-    {"name": "Rogers Communications", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
-    {"name": "Chobani", "sector": "Special Situations", "type": "Watchlist", "entry_date": "2025-01"},
     {"name": "Hydro One", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "TransAlta Corporation", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Gibson Energy", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Enbridge", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Bayshore Healthcare", "sector": "Healthcare Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Extendicare", "sector": "Healthcare Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Lifemark Health Group", "sector": "Healthcare Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "CBI Health", "sector": "Healthcare Services", "type": "Watchlist", "entry_date": "2025-01"},
     {"name": "Manulife Financial", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Rogers Communications", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Fairfax Financial", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Element Fleet Management", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Propel Holdings", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Chobani", "sector": "Special Situations", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Clearwater Seafoods", "sector": "Special Situations", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Yellow Pages", "sector": "Special Situations", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Torstar Corporation", "sector": "Special Situations", "type": "Watchlist", "entry_date": "2025-01"},
 ]
 
 
