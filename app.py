@@ -7,8 +7,8 @@ from report_generator import generate_report
 
 st.set_page_config(page_title="GFAM Portfolio Monitor", page_icon="📡", layout="wide")
 
-st.title("📡 GFAM Portfolio Monitor")
-st.caption("AI-powered portfolio monitoring for Genesis Financial Asset Management")
+st.title("📡 GFAM Market Watchlist")
+st.caption("AI-powered company monitoring across GFAM's target sectors")
 st.divider()
 
 # ── Load portfolio ────────────────────────────────────────────
@@ -19,7 +19,7 @@ portfolio = st.session_state.portfolio
 
 # ── Sidebar ───────────────────────────────────────────────────
 with st.sidebar:
-    st.header("📁 Portfolio Companies")
+    st.header("📁 Watchlist")
 
     for company in portfolio:
         col1, col2 = st.columns([4, 1])
@@ -44,7 +44,7 @@ with st.sidebar:
 
     st.divider()
     days_back = st.slider("Lookback period (days)", 7, 90, 30)
-    run = st.button("🔄 Run Portfolio Update", use_container_width=True)
+    run = st.button("🔄 Run Watchlist Update", use_container_width=True)
 
 REC_COLORS = {
     "Monitor": "success",
@@ -88,7 +88,7 @@ if run:
 
     status.empty()
     progress.empty()
-    st.success(f"Portfolio update complete — {len(portfolio)} companies analyzed")
+    st.success(f"Watchlist update complete — {len(portfolio)} companies analyzed")
     st.divider()
 
     # ── Summary metrics ───────────────────────────────────────
@@ -107,7 +107,7 @@ if run:
     try:
         report_bytes = generate_report(portfolio_results)
         st.download_button(
-            label="📄 Download Monthly Memo (.docx)",
+            label="📄 Download Watchlist Report (.docx)",
             data=report_bytes,
             file_name=f"GFAM_Portfolio_Update_{datetime.now().strftime('%Y-%m')}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -169,7 +169,7 @@ if run:
                         st.markdown(f"[{a['title'][:60]}...]({a['url']}) — *{a['published_at']}*")
 
 else:
-    st.info("👈 Configure your portfolio in the sidebar and click **Run Portfolio Update**.")
+    st.info("👈 Add companies to your watchlist in the sidebar and click **Run Update**.")
 
     col1, col2, col3 = st.columns(3)
     with col1:

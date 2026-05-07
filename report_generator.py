@@ -108,7 +108,7 @@ def generate_report(portfolio_results: list[dict]) -> bytes:
     bottom.set(qn('w:color'), '1F3864')
     pBdr.append(bottom)
     pPr.append(pBdr)
-    r1 = p.add_run("GFAM PORTFOLIO MONITORING REPORT")
+    r1 = p.add_run("GFAM MARKET WATCHLIST REPORT")
     r1.bold = True
     r1.font.size = Pt(16)
     r1.font.name = "Arial"
@@ -238,7 +238,7 @@ def generate_report(portfolio_results: list[dict]) -> bytes:
     # ── Footer ────────────────────────────────────────────────
     footer = doc.sections[0].footer
     fp = footer.paragraphs[0]
-    fr = fp.add_run(f"GFAM Portfolio Monitoring  |  Confidential  |  {today}")
+    fr = fp.add_run(f"GFAM Market Watchlist  |  Confidential  |  {today}")
     fr.font.size = Pt(8)
     fr.font.name = "Arial"
     fr.font.color.rgb = RGBColor.from_string("999999")

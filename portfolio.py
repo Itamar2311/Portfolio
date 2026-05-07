@@ -4,10 +4,12 @@ import os
 PORTFOLIO_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'portfolio.json')
 
 DEFAULT_PORTFOLIO = [
-    {"name": "Northgate Healthcare Services", "sector": "Healthcare Services", "type": "Acquisition", "entry_date": "2024-03"},
-    {"name": "PulseGrid Infrastructure", "sector": "Infrastructure", "type": "Growth Equity", "entry_date": "2024-09"},
-    {"name": "Maple Financial Group", "sector": "Financial Services", "type": "Acquisition Financing", "entry_date": "2023-11"},
-    {"name": "Ridgeline Utilities", "sector": "Infrastructure", "type": "Growth Capital", "entry_date": "2024-01"},
+    {"name": "Algonquin Power and Utilities", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Bayshore Healthcare", "sector": "Healthcare Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Rogers Communications", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Chobani", "sector": "Special Situations", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Hydro One", "sector": "Infrastructure", "type": "Watchlist", "entry_date": "2025-01"},
+    {"name": "Manulife Financial", "sector": "Financial Services", "type": "Watchlist", "entry_date": "2025-01"},
 ]
 
 
