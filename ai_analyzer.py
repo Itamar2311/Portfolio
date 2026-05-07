@@ -10,49 +10,65 @@ def clean(text):
     return text.encode('ascii', 'ignore').decode('ascii')
 
 
-def analyze_company(company: dict, articles: list[dict], sector_trends: list[dict]) -> dict:
+def analyze_company(company: dict, articles: list[dict], sector_trends: list[dict], stock_data: dict = {}) -> dict:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
     company_name = clean(company["name"])
     sector = clean(company["sector"])
 
     news_text = "\n".join([
-        f"- {clean(a['title'])} ({clean(a['published_at'])}): {clean(a['description'])}"
+        f"- [{clean(a['published_at'])}] {clean(a['title'])}: {clean(a['description'])}"
         for a in articles
-    ]) or "No recent news found."
+    ]) if articles else "No direct company news found — base analysis on sector trends and stock data."
 
     trends_text = "\n".join([
         f"- {clean(a['title'])}: {clean(a['description'])}"
         for a in sector_trends
-    ]) or "No sector trends found."
+    ]) if sector_trends else "No sector trends found."
 
-    prompt = f"""You are a portfolio monitoring analyst at Genesis Financial Asset Management (GFAM).
+    stock_text = ""
+    if stock_data:
+        stock_text = f"""
+Stock data ({stock_data.get('ticker', '')}):
+- Current price: {stock_data.get('current_price', 'N/A')}
+- 30-day price change: {stock_data.get('change_30d_pct', 'N/A')}%
+- Trend: {stock_data.get('trend', 'N/A')}
+"""
 
-You are reviewing updates for one of GFAM's portfolio companies.
+    prompt = f"""You are a portfolio analyst at Genesis Financial Asset Management (GFAM).
 
-Company: {company_name}
-Sector: {sector}
-Deal Type: {clean(company.get('type', ''))}
-Entry Date: {clean(company.get('entry_date', ''))}
+You are monitoring: {company_name} ({sector})
+Deal type: {clean(company.get('type', 'Watchlist'))}
 
-Recent news about this company:
+{stock_text}
+
+Recent news:
 {news_text}
 
-Recent sector trends ({sector}):
+Sector trends ({sector}):
 {trends_text}
 
-Analyze the above and respond ONLY with this JSON:
+CRITICAL INSTRUCTIONS:
+- You MUST give a definitive sentiment — Positive or Negative. NEVER Neutral unless you have absolutely zero data.
+- You MUST give a sentiment_score between 1-4 (Negative) or 7-10 (Positive). Never 5 or 6.
+- If stock is down >5% = Negative. If up >5% = Positive.
+- If there is M&A news = flag as material event, score 8+.
+- If there is earnings news = flag and score accordingly.
+- If there is leadership change = flag as material event.
+- If no direct company news, use sector trends to form a view — do not default to neutral.
+- recommendation must be "Follow Up" or "Urgent Review" if anything material was found. Only use "Monitor" if truly nothing noteworthy.
 
+Respond ONLY with this JSON:
 {{
-  "sentiment": "Positive, Neutral, or Negative",
-  "sentiment_score": <integer 1-10 where 10 is very positive>,
-  "material_events": ["Brief description of any material event e.g. leadership change, new contract, legal issue"],
-  "news_summary": "2-3 sentences summarizing the key developments for this company over the past 30 days",
-  "sector_summary": "2 sentences summarizing the key sector trends and how they affect this company",
-  "risks_flagged": ["Any new risk identified from the news"],
-  "opportunities_flagged": ["Any new opportunity identified from the news"],
+  "sentiment": "Positive or Negative",
+  "sentiment_score": <integer 1-4 or 7-10, never 5 or 6>,
+  "material_events": ["Brief description of material event if found, else empty array"],
+  "news_summary": "2-3 sentences summarizing key developments. If no direct news, summarize sector context and what it means for this company specifically.",
+  "sector_summary": "2 sentences on sector trends and direct impact on this company.",
+  "risks_flagged": ["Specific risk identified"],
+  "opportunities_flagged": ["Specific opportunity identified"],
   "recommendation": "Monitor, Follow Up, or Urgent Review",
-  "recommendation_reason": "1-2 sentences explaining the recommendation"
+  "recommendation_reason": "1-2 sentences — be specific about what drove this recommendation."
 }}"""
 
     response = client.chat.completions.create(
@@ -72,17 +88,20 @@ Analyze the above and respond ONLY with this JSON:
 
     try:
         result = json.loads(raw)
+        # Force non-neutral score
+        score = result.get("sentiment_score", 5)
+        if score in [5, 6]:
+            result["sentiment_score"] = 4 if result.get("sentiment") == "Negative" else 7
+        return result
     except Exception:
-        result = {
-            "sentiment": "Neutral",
-            "sentiment_score": 5,
+        return {
+            "sentiment": "Negative",
+            "sentiment_score": 4,
             "material_events": [],
-            "news_summary": "Could not parse AI response.",
+            "news_summary": "Unable to retrieve data for this company.",
             "sector_summary": "",
-            "risks_flagged": [],
+            "risks_flagged": ["Data retrieval failed"],
             "opportunities_flagged": [],
-            "recommendation": "Monitor",
-            "recommendation_reason": "Unable to analyze at this time.",
+            "recommendation": "Follow Up",
+            "recommendation_reason": "Manual review needed — automated data unavailable.",
         }
-
-    return result

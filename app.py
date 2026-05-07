@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
 from portfolio import load_portfolio, save_portfolio, add_company, remove_company
-from news_fetcher import fetch_company_news, fetch_sector_trends
+from news_fetcher import fetch_company_news, fetch_sector_trends, fetch_stock_data
 from ai_analyzer import analyze_company
 from report_generator import generate_report
 
@@ -73,14 +73,16 @@ if run:
         with st.spinner(f"Fetching news for {company['name']}..."):
             articles = fetch_company_news(company['name'], days_back)
             sector_trends = fetch_sector_trends(company['sector'], days_back)
+            stock_data = fetch_stock_data(company['name'])
 
         with st.spinner(f"Running AI analysis for {company['name']}..."):
-            analysis = analyze_company(company, articles, sector_trends)
+            analysis = analyze_company(company, articles, sector_trends, stock_data)
 
         portfolio_results.append({
             "company": company,
             "articles": articles,
             "sector_trends": sector_trends,
+            "stock_data": stock_data,
             "analysis": analysis,
         })
 
@@ -126,6 +128,7 @@ if run:
         analysis = pr["analysis"]
         articles = pr["articles"]
         sector_trends = pr["sector_trends"]
+        stock_data = pr.get("stock_data", {})
 
         rec = analysis.get("recommendation", "Monitor")
         sentiment = analysis.get("sentiment", "Neutral")
@@ -162,6 +165,11 @@ if run:
                     st.markdown("**🟢 Opportunities**")
                     for o in opps:
                         st.write(f"• {o}")
+
+                if stock_data:
+                    st.markdown("**📈 Stock Data**")
+                    trend_icon = "📈" if stock_data.get("trend") == "up" else "📉" if stock_data.get("trend") == "down" else "➡️"
+                    st.write(f"{trend_icon} {stock_data.get('ticker','')} — ${stock_data.get('current_price','N/A')} | 30d change: {stock_data.get('change_30d_pct','N/A')}%")
 
                 if articles:
                     st.markdown("**Recent Articles**")
